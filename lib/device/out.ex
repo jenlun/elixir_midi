@@ -2,8 +2,8 @@ defmodule Device.Out do
 
   use GenServer
 
-  def start_link() do
-    {:ok, _} = GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  def start_link(arg) do
+    {:ok, _} = GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
   def send_event(event) do
@@ -17,7 +17,7 @@ defmodule Device.Out do
 
   @impl true
   def init([]) do
-    {:ok, pid} = PortMidi.open(:output, "Network Session 1")
+    {:ok, pid} = PortMidi.open(:output, "IAC Driver Bus 1")
     {:ok, pid}
   end
 

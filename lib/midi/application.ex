@@ -10,6 +10,9 @@ defmodule Midi.Application do
     children = [
       # Starts a worker by calling: Midi.Worker.start_link(arg)
       # {Midi.Worker, arg}
+      {Device.Out, []},
+      {Device.In, []},
+      {Conductor, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

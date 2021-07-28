@@ -10,8 +10,8 @@ defmodule Conductor do
 
   @ppqn Application.get_env(:midi, :ppqn)
 
-  def start_link(bpm) do
-    {:ok, _} = GenServer.start_link(__MODULE__, [bpm], name: __MODULE__)
+  def start_link(arg) do
+    {:ok, _} = GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
   def load_example_sequence() do
@@ -76,9 +76,13 @@ defmodule Conductor do
     GenServer.call(__MODULE__, :stop)
   end
 
+  def toggle_play() do
+    GenServer.call(__MODULE__, :toggle_play)
+  end
+
   @impl true
-  def init([bpm]) do
-    {:ok, %Conductor{bpm: bpm}}
+  def init([]) do
+    {:ok, %Conductor{}}
   end
 
   @impl true
@@ -91,7 +95,7 @@ defmodule Conductor do
   def handle_call(:play, _from, state) do
     Process.send(__MODULE__, :pulse, [])
 
-    new_state = %{state | playing: true}
+    new_state = %{state | playing: true, play_start: timestamp() }
     {:reply, :ok, new_state}
   end
 
@@ -101,6 +105,16 @@ defmodule Conductor do
 
     new_state = %{state | playing: false}
     {:reply, :ok, new_state}
+  end
+
+  @impl true
+  def handle_call(:toggle_play, from, %Conductor{playing: true} = state) do
+    handle_call(:stop, from, state)
+  end
+
+  @impl true
+  def handle_call(:toggle_play, from, %Conductor{playing: false} = state) do
+    handle_call(:play, from, state)
   end
 
   @impl true
