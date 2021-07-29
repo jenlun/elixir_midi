@@ -1,11 +1,11 @@
 defmodule Pattern do
   @ppqn Application.get_env(:midi, :ppqn)
   defstruct active: true,
-    type: :step,
-    events: [],
-    notes: [],
-    id: UUID.uuid4(),
-    length: @ppqn * 4
+            type: :step,
+            events: [],
+            notes: [],
+            id: UUID.uuid4(),
+            length: @ppqn * 4
 
   def events_for_tick(pattern, tick, channel) do
     pattern

@@ -1,6 +1,5 @@
 defmodule Gui do
-
-@behaviour Ratatouille.App
+  @behaviour Ratatouille.App
 
   import Ratatouille.View
 
@@ -19,5 +18,4 @@ defmodule Gui do
       label(content: "Counter is #{model} (+/-)")
     end
   end
-
 end

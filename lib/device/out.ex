@@ -1,5 +1,4 @@
 defmodule Device.Out do
-
   use GenServer
 
   def start_link(arg) do
@@ -13,7 +12,6 @@ defmodule Device.Out do
   def all_off() do
     GenServer.call(__MODULE__, :all_off)
   end
-
 
   @impl true
   def init([]) do
@@ -30,11 +28,12 @@ defmodule Device.Out do
   @impl true
   def handle_call(:all_off, _from, pid) do
     all_off_events()
-    |> Enum.each(fn(x) -> PortMidi.write(pid, x) end)
+    |> Enum.each(fn x -> PortMidi.write(pid, x) end)
+
     {:reply, :ok, pid}
   end
 
   def all_off_events() do
-    for i <- 0..15, j <- 0..127, do:  {0x80 + i, j, 0}
+    for i <- 0..15, j <- 0..127, do: {0x80 + i, j, 0}
   end
 end

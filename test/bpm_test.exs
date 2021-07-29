@@ -9,6 +9,6 @@ defmodule BPMTest do
 
   test "one minute in" do
     bpm = 120
-    assert BPM.tick_for_timestamp(bpm, 60000000000) == bpm * @ppqn
+    assert BPM.tick_for_timestamp(bpm, 60_000_000_000) == bpm * @ppqn
   end
 end

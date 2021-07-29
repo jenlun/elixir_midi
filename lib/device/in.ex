@@ -1,5 +1,4 @@
 defmodule Device.In do
-
   use GenServer
 
   def start_link(arg) do
@@ -17,9 +16,7 @@ defmodule Device.In do
   def handle_info({_pid, events} = msg, pid) do
     IO.inspect(events)
     # dont really know how to interpret timestamp. ignoring it for now.
-    Enum.each(events, fn({event, _ts}) -> Device.Out.send_event(event) end)
+    Enum.each(events, fn {event, _ts} -> Device.Out.send_event(event) end)
     {:noreply, pid}
   end
-
-
 end

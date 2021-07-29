@@ -2,13 +2,12 @@ defmodule Conductor do
   use GenServer
 
   defstruct bpm: 120,
-    sequence: %Sequence{},
-    playing: false,
-    recording: false,
-    active_track: 1,
-    play_start: 0,
-    last_tick: 0
-
+            sequence: %Sequence{},
+            playing: false,
+            recording: false,
+            active_track: 1,
+            play_start: 0,
+            last_tick: 0
 
   @ppqn Application.get_env(:midi, :ppqn)
 
@@ -19,6 +18,7 @@ defmodule Conductor do
   def load_example_sequence() do
     length = div(@ppqn, 2)
     one_bar = @ppqn * 4
+
     sequence = %Sequence{
       name: "Example Sequence",
       tracks: [
@@ -64,9 +64,10 @@ defmodule Conductor do
               ]
             }
           ]
-         }
+        }
       ]
     }
+
     GenServer.call(__MODULE__, {:load_sequence, sequence})
   end
 
@@ -105,7 +106,7 @@ defmodule Conductor do
   def handle_call(:play, _from, state) do
     Process.send(__MODULE__, :pulse, [])
 
-    new_state = %{state | playing: true, play_start: timestamp() }
+    new_state = %{state | playing: true, play_start: timestamp()}
     {:reply, :ok, new_state}
   end
 
@@ -134,7 +135,11 @@ defmodule Conductor do
   end
 
   @impl true
-  def handle_call({:set_active_track, track}, _from, %Conductor{active_track: current_track} = state) do
+  def handle_call(
+        {:set_active_track, track},
+        _from,
+        %Conductor{active_track: current_track} = state
+      ) do
     new_state = %{state | active_track: track}
     {:reply, :ok, new_state}
   end
@@ -144,7 +149,7 @@ defmodule Conductor do
     current_tick = BPM.tick_for_timestamp(state.bpm, timestamp() - state.play_start)
 
     if current_tick != state.last_tick do
-      if rem(current_tick, @ppqn ) == 0, do: PubSub.publish(:beat, current_tick)
+      if rem(current_tick, @ppqn) == 0, do: PubSub.publish(:beat, current_tick)
       PubSub.publish(:pulse, current_tick)
 
       state
@@ -164,5 +169,4 @@ defmodule Conductor do
   def timestamp() do
     :erlang.system_time()
   end
-
 end

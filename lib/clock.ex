@@ -1,5 +1,4 @@
 defmodule Clock do
-
   use GenServer
 
   def start_link() do
@@ -30,7 +29,7 @@ defmodule Clock do
 
   @impl true
   def handle_info({:tick, ts}, state = {:running, t0}) do
-   # IO.puts(ts / 1000000)
+    # IO.puts(ts / 1000000)
     send_tick(t0)
     {:noreply, state}
   end
@@ -41,7 +40,6 @@ defmodule Clock do
     send_tick(t0)
     {:reply, :ok, {:running, t0}}
   end
-
 
   @impl true
   def handle_call(:stop, _from, {:running, t0}) do
@@ -58,5 +56,4 @@ defmodule Clock do
     GenServer.cast(MyMasterTrack, {:tick, t0, ts})
     Process.send_after(MyClock, {:tick, ts}, 10)
   end
-
 end
