@@ -2,8 +2,10 @@ defmodule Conductor do
   use GenServer
 
   defstruct bpm: 120,
-    sequence: nil,
+    sequence: %Sequence{},
     playing: false,
+    recording: false,
+    active_track: 1,
     play_start: 0,
     last_tick: 0
 
@@ -80,6 +82,14 @@ defmodule Conductor do
     GenServer.call(__MODULE__, :toggle_play)
   end
 
+  def set_active_track(track) do
+    GenServer.call(__MODULE__, {:set_active_track, track})
+  end
+
+  def toggle_record() do
+    GenServer.call(__MODULE__, :toggle_record)
+  end
+
   @impl true
   def init([]) do
     {:ok, %Conductor{}}
@@ -115,6 +125,18 @@ defmodule Conductor do
   @impl true
   def handle_call(:toggle_play, from, %Conductor{playing: false} = state) do
     handle_call(:play, from, state)
+  end
+
+  @impl true
+  def handle_call(:toggle_record, _from, %Conductor{recording: recording} = state) do
+    new_state = %{state | recording: not recording}
+    {:reply, :ok, new_state}
+  end
+
+  @impl true
+  def handle_call({:set_active_track, track}, _from, %Conductor{active_track: current_track} = state) do
+    new_state = %{state | active_track: track}
+    {:reply, :ok, new_state}
   end
 
   @impl true
