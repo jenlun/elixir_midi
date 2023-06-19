@@ -7,7 +7,7 @@ defmodule Device.In do
 
   @impl true
   def init([]) do
-    {:ok, input} = PortMidi.open(:input, "IAC Driver Bus 2")
+    {:ok, input} = PortMidi.open(:input, "mioXL DIN 2")
     PortMidi.listen(input, self())
     {:ok, input}
   end

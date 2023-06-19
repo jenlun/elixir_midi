@@ -1,4 +1,4 @@
-defmodule Device.Out do
+ defmodule Device.Out do
   use GenServer
 
   def start_link(arg) do
@@ -15,7 +15,7 @@ defmodule Device.Out do
 
   @impl true
   def init([]) do
-    {:ok, pid} = PortMidi.open(:output, "IAC Driver Bus 1")
+    {:ok, pid} = PortMidi.open(:output, "mioXL DIN 1")
     {:ok, pid}
   end
 
